@@ -1,48 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Jaxon's Reading Tracker</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafaf8; color: #1a1a18; }
-.page { padding: 2rem 1.25rem 4rem; max-width: 660px; margin: 0 auto; }
-.hero { text-align: center; padding: 2rem 0 1.5rem; }
-.hero-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; object-position: center 20%; border: 3px solid #7f77dd; margin: 0 auto 14px; display: block; }
-.hero-name { font-size: 30px; font-weight: 600; color: #1a1a18; letter-spacing: -0.3px; }
-.hero-sub { font-size: 15px; color: #6b6b68; margin-top: 6px; }
-.stats-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 1.5rem 0; }
-.stat { background: #f1efe8; border-radius: 12px; padding: 1rem; text-align: center; }
-.stat-val { font-size: 32px; font-weight: 600; color: #1a1a18; }
-.stat-lbl { font-size: 12px; color: #888780; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }t; }
-.btn-markread:hover { background: #534ab7; }
-.btn-sm-del { background: none; border: none; color: #c8c6bd; font-size: 14px; cursor: pointer; padding: 0 4px; }
-.btn-sm-del:hover { color: #e24b4a; }
-.scan-area { background: #fff; border: 1px solid #e8e6df; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 12px; }
-.scan-btn { width: 100%; background: #1a1a18; border: none; border-radius: 8px; padding: 0; height: 44px; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
-.scan-btn:hover { background: #2c2c2a; }
-.tab-row { display: flex; margin-bottom: 1rem; border: 1px solid #e8e6df; border-radius: 10px; overflow: hidden; }
-.tab { flex: 1; padding: 9px 4px; font-size: 13px; font-weight: 500; text-align: center; cursor: pointer; background: #fff; color: #888780; border: none; font-family: inherit; }
-.tab.active { background: #7f77dd; color: #fff; }
-.admin-section { margin-top: 2rem; border-top: 1px solid #e8e6df; padding-top: 1.5rem; }
-.admin-toggle-btn { background: none; border: 1px solid #e8e6df; border-radius: 8px; padding: 6px 14px; font-size: 13px; color: #888780; cursor: pointer; display: block; margin: 0 auto; }
-.admin-inner { margin-top: 1.25rem; }
-input[type=text], input[type=number] { border: 1px solid #d3d1c7; border-radius: 8px; padding: 8px 12px; font-size: 14px; background: #fff; color: #1a1a18; outline: none; height: 38px; font-family: inherit; }
-input[type=text] { flex: 1; min-width: 80px; }
-input[type=number] { width: 70px; }
-.btn-add { background: #7f77dd; border: 1px solid #7f77dd; border-radius: 8px; padding: 0 18px; height: 38px; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; font-family: inherit; }
-.btn-add:hover { background: #534ab7; }
-@media (max-width: 420px) { .stats-row { gap: 8px; } .stat-val { font-size: 24px; } .hero-name { font-size: 22px; } .tab { font-size: 11px; } }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fafaf8;color:#1a1a18;}
+.page{padding:2rem 1.25rem 4rem;max-width:660px;margin:0 auto;}
+.hero{text-align:center;padding:2rem 0 1.5rem;}
+.hero-photo{width:100px;height:100px;border-radius:50%;object-fit:cover;object-position:center 20%;border:3px solid #7f77dd;margin:0 auto 14px;display:block;}
+.hero-name{font-size:30px;font-weight:600;color:#1a1a18;letter-spacing:-0.3px;}
+.hero-sub{font-size:15px;color:#6b6b68;margin-top:6px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:1.5rem 0;}
+.stat{background:#f1efe8;border-radius:12px;padding:1rem;text-align:center;}
+.stat-val{font-size:32px;font-weight:600;color:#1a1a18;}
+.stat-lbl{font-size:12px;color:#888780;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.next-prize-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;}
+.pts-bar-wrap{height:10px;background:#f1efe8;border-radius:99px;overflow:hidden;margin:6px 0;}
+.pts-bar{height:100%;border-radius:99px;background:#7F77DD;transition:width 0.5s ease;}
+.all-unlocked{background:#eaf3de;border-radius:12px;padding:1rem 1.25rem;color:#3b6d11;font-size:15px;font-weight:500;margin-bottom:1.5rem;text-align:center;}
+.section-head{font-size:14px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:0.6px;margin:1.75rem 0 0.75rem;}
+.stars-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;}
+.star{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid #e8e6df;background:#f1efe8;color:#c8c6bd;}
+.star.earned{background:#faeeda;border-color:#ef9f27;color:#ef9f27;}
+.card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px;}
+.prize-row{display:flex;align-items:center;gap:12px;}
+.prize-pts{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:#eaf3de;color:#3b6d11;white-space:nowrap;}
+.prize-name{font-size:15px;color:#1a1a18;flex:1;}
+.prize-status-earned{font-size:12px;color:#3b6d11;font-weight:600;background:#eaf3de;padding:3px 10px;border-radius:99px;white-space:nowrap;}
+.prize-status-locked{font-size:12px;color:#888780;white-space:nowrap;}
+.book-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid #f1efe8;}
+.book-item:last-child{border-bottom:none;}
+.book-del{background:none;border:none;color:#c8c6bd;font-size:14px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
+.book-del:hover{color:#e24b4a;}
+.book-pts{font-size:12px;font-weight:600;color:#854f0b;background:#faeeda;padding:2px 8px;border-radius:99px;}
+.book-hearts{font-size:13px;color:#d4537e;}
+.empty{color:#a0a09a;font-size:14px;padding:12px 0;text-align:center;}
+.rec-card{background:#fff;border:1px solid #e8e6df;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px;}
+.rec-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.rec-title{font-size:15px;font-weight:600;color:#1a1a18;}
+.rec-author{font-size:13px;color:#888780;margin-top:1px;}
+.rec-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap;flex-shrink:0;}
+.badge-easy{background:#eaf3de;color:#3b6d11;}
+.badge-medium{background:#faeeda;color:#854f0b;}
+.badge-challenge{background:#eeedfe;color:#534ab7;}
+.rec-why{font-size:13px;color:#6b6b68;line-height:1.5;}
+.rec-loading{color:#888780;font-size:14px;padding:1.5rem 0;text-align:center;font-style:italic;}
+.rating-star{font-size:26px;cursor:pointer;color:#e8e6df;line-height:1;transition:color 0.1s;user-select:none;display:inline-block;}
+.rating-star.active{color:#ef9f27;}
+.toread-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1efe8;}
+.toread-item:last-child{border-bottom:none;}
+.toread-cover{width:36px;height:48px;border-radius:4px;background:#eeedfe;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;}
+.toread-cover img{width:36px;height:48px;object-fit:cover;}
+.toread-info{flex:1;min-width:0;}
+.toread-title{font-size:14px;font-weight:600;color:#1a1a18;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;}
+.toread-author{font-size:12px;color:#888780;margin-top:2px;}
+.toread-actions{display:flex;gap:6px;flex-shrink:0;align-items:center;}
+.btn-markread{background:#7f77dd;border:1px solid #7f77dd;border-radius:8px;padding:0 12px;height:32px;color:#fff;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.btn-markread:hover{background:#534ab7;}
+.btn-sm-del{background:none;border:none;color:#c8c6bd;font-size:14px;cursor:pointer;padding:0 4px;}
+.btn-sm-del:hover{color:#e24b4a;}
+.search-wrap{position:relative;margin-bottom:8px;}
+.search-wrap input{width:100%;border:1px solid #d3d1c7;border-radius:8px;padding:8px 12px;font-size:14px;background:#fff;color:#1a1a18;outline:none;height:42px;font-family:inherit;}
+.search-wrap input:focus{border-color:#7f77dd;box-shadow:0 0 0 3px rgba(127,119,221,0.15);}
+.search-results{background:#fff;border:1px solid #e8e6df;border-radius:10px;overflow:hidden;margin-top:4px;}
+.search-result-item{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1efe8;}
+.search-result-item:last-child{border-bottom:none;}
+.search-result-item:hover{background:#f8f7f4;}
+.search-result-cover{width:32px;height:44px;border-radius:3px;object-fit:cover;flex-shrink:0;background:#eeedfe;}
+.search-result-title{font-size:13px;font-weight:600;color:#1a1a18;}
+.search-result-author{font-size:11px;color:#888780;margin-top:1px;}
+.search-loading{padding:12px;text-align:center;font-size:13px;color:#888780;font-style:italic;}
+.tab-row{display:flex;margin-bottom:1rem;border:1px solid #e8e6df;border-radius:10px;overflow:hidden;}
+.tab{flex:1;padding:9px 4px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;background:#fff;color:#888780;border:none;font-family:inherit;}
+.tab.active{background:#7f77dd;color:#fff;}
+.admin-section{margin-top:2rem;border-top:1px solid #e8e6df;padding-top:1.5rem;}
+.admin-toggle-btn{background:none;border:1px solid #e8e6df;border-radius:8px;padding:6px 14px;font-size:13px;color:#888780;cursor:pointer;display:block;margin:0 auto;}
+.admin-toggle-btn:hover{background:#f1efe8;}
+.admin-inner{margin-top:1.25rem;}
+input[type=text],input[type=number]{border:1px solid #d3d1c7;border-radius:8px;padding:8px 12px;font-size:14px;background:#fff;color:#1a1a18;outline:none;height:38px;font-family:inherit;}
+input[type=text]{flex:1;min-width:80px;}
+input[type=number]{width:70px;}
+input:focus{border-color:#7f77dd;box-shadow:0 0 0 3px rgba(127,119,221,0.15);}
+.btn-add{background:#7f77dd;border:1px solid #7f77dd;border-radius:8px;padding:0 18px;height:38px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.btn-add:hover{background:#534ab7;}
+.btn-add:active{transform:scale(0.98);}
+.prize-edit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f1efe8;}
+.prize-edit-row:last-child{border-bottom:none;}
+.prize-edit-name{font-size:14px;flex:1;color:#1a1a18;}
+.prize-edit-pts{font-size:13px;color:#888780;}
+.prize-edit-del{background:none;border:none;color:#c8c6bd;font-size:13px;cursor:pointer;padding:0 4px;}
+.prize-edit-del:hover{color:#e24b4a;}
+@media(max-width:420px){.stats-row{gap:8px;}.stat-val{font-size:24px;}.hero-name{font-size:22px;}.tab{font-size:11px;}}
 </style>
 </head>
 <body>
 <div class="page">
   <div class="hero">
-    <img class="hero-photo" src="https://rachschaaf.com/wp-content/uploads/2026/04/jaxon-photo_2.jpeg" alt="Jaxon" onerror="this.style.display='none';document.getElementById('hero-emoji').style.display='block'" />
-    <div id="hero-emoji" style="font-size:48px;margin-bottom:14px;display:none;">📚</div>
+    <img class="hero-photo" src="https://rachschaaf.com/wp-content/uploads/2026/04/jaxon-photo_2.jpeg" alt="Jaxon" onerror="this.style.display='none';document.getElementById('hero-emoji').style.display='block'"/>
+    <div id="hero-emoji" style="font-size:48px;margin-bottom:14px;display:none;">&#128218;</div>
     <div class="hero-name">Jaxon's reading adventure</div>
-    <div class="hero-sub">Every book earns a star — stars unlock prizes!</div>
+    <div class="hero-sub">Every book earns a star &#8212; stars unlock prizes!</div>
   </div>
   <div class="stats-row">
     <div class="stat"><div class="stat-val" id="total-books">0</div><div class="stat-lbl">Books read</div></div>
@@ -62,55 +121,46 @@ input[type=number] { width: 70px; }
   <div id="rec-list"></div>
   <div class="admin-section">
     <button class="admin-toggle-btn" onclick="toggleAdmin()">&#9881; Parent controls</button>
-    <div class="admin-inner" id="admin-inner" style="display:none;">
-      <div class="tab-row">
+    <div class="admin-inner" id="admin-inner" style="display:none;">      <div class="tab-row">
         <button class="tab active" id="tab-read" onclick="switchTab('read')">Mark as read</button>
         <button class="tab" id="tab-wishlist" onclick="switchTab('wishlist')">Add to wishlist</button>
         <button class="tab" id="tab-prizes" onclick="switchTab('prizes')">Edit prizes</button>
       </div>
       <div id="panel-read">
-        <div class="scan-area">
-          <button class="scan-btn" id="scan-toggle-btn" onclick="toggleScanner()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="3" height="10" rx="1"/><rect x="7" y="5" width="2" height="14" rx="1"/><rect x="11" y="7" width="1" height="10" rx="1"/><rect x="14" y="5" width="3" height="14" rx="1"/><rect x="19" y="7" width="3" height="10" rx="1"/></svg>
-            Scan barcode
-          </button>
-          <div id="scanner-wrap" style="display:none;"><div id="scan-video-wrap" style="margin-top:10px;border-radius:10px;overflow:hidden;"></div></div>
-          <div id="scan-result-block" style="display:none;"></div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <input type="text" id="book-input" placeholder="Book title..." />
-            <input type="number" id="pts-input" value="1" min="1" max="99" style="width:64px;" />
+        <div class="card" style="margin-bottom:12px;">
+          <div style="font-size:13px;color:#6b6b68;margin-bottom:8px;">Search for a book Jaxon finished</div>
+          <div class="search-wrap"><input type="text" id="book-search" placeholder="Type a book title..." autocomplete="off" oninput="jSearchBooks(this.value,'read')"/></div>
+          <div id="book-search-results"></div>
+          <div id="book-selected" style="display:none;margin-top:8px;"></div>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+            <label style="font-size:13px;color:#6b6b68;flex-shrink:0;">Points:</label>
+            <input type="number" id="pts-input" value="1" min="1" max="99" style="width:70px;"/>
           </div>
         </div>
         <div class="card" style="margin-bottom:12px;">
           <div style="font-size:13px;color:#6b6b68;margin-bottom:6px;">How much did Jaxon like it?</div>
-          <div id="like-stars"><span class="rating-star" data-group="like" data-val="1">★</span><span class="rating-star" data-group="like" data-val="2">★</span><span class="rating-star" data-group="like" data-val="3">★</span><span class="rating-star" data-group="like" data-val="4">★</span><span class="rating-star" data-group="like" data-val="5">★</span></div>
-          <span id="like-label" style="font-size:13px;color:#888780;"></span>
+          <div style="display:flex;align-items:center;gap:10px;"><div id="like-stars"><span class="rating-star" data-group="like" data-val="1">&#9733;</span><span class="rating-star" data-group="like" data-val="2">&#9733;</span><span class="rating-star" data-group="like" data-val="3">&#9733;</span><span class="rating-star" data-group="like" data-val="4">&#9733;</span><span class="rating-star" data-group="like" data-val="5">&#9733;</span></div><span id="like-label" style="font-size:13px;color:#888780;"></span></div>
           <div style="font-size:13px;color:#6b6b68;margin:10px 0 6px;">How hard was it to read?</div>
-          <div id="hard-stars"><span class="rating-star" data-group="hard" data-val="1">★</span><span class="rating-star" data-group="hard" data-val="2">★</span><span class="rating-star" data-group="hard" data-val="3">★</span><span class="rating-star" data-group="hard" data-val="4">★</span><span class="rating-star" data-group="hard" data-val="5">★</span></div>
-          <span id="hard-label" style="font-size:13px;color:#888780;"></span>
+          <div style="display:flex;align-items:center;gap:10px;"><div id="hard-stars"><span class="rating-star" data-group="hard" data-val="1">&#9733;</span><span class="rating-star" data-group="hard" data-val="2">&#9733;</span><span class="rating-star" data-group="hard" data-val="3">&#9733;</span><span class="rating-star" data-group="hard" data-val="4">&#9733;</span><span class="rating-star" data-group="hard" data-val="5">&#9733;</span></div><span id="hard-label" style="font-size:13px;color:#888780;"></span></div>
           <button class="btn-add" style="margin-top:14px;width:100%;" onclick="addBook()">Add book + refresh recommendations</button>
         </div>
       </div>
       <div id="panel-wishlist" style="display:none;">
-        <div class="scan-area">
-          <button class="scan-btn" id="wish-scan-btn" onclick="toggleWishScanner()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="3" height="10" rx="1"/><rect x="7" y="5" width="2" height="14" rx="1"/><rect x="11" y="7" width="1" height="10" rx="1"/><rect x="14" y="5" width="3" height="14" rx="1"/><rect x="19" y="7" width="3" height="10" rx="1"/></svg>
-            Scan barcode
-          </button>
-          <div id="wish-scanner-wrap" style="display:none;"><div id="wish-video-wrap" style="margin-top:10px;border-radius:10px;overflow:hidden;"></div></div>
-          <div id="wish-result-block" style="display:none;"></div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <input type="text" id="wish-input" placeholder="Book title..." />
-            <button class="btn-add" onclick="addWishManual()">Add to list</button>
-          </div>
+        <div class="card">
+          <div style="font-size:13px;color:#6b6b68;margin-bottom:8px;">Search for a book to add to Jaxon's wishlist</div>
+          <div class="search-wrap"><input type="text" id="wish-search" placeholder="Type a book title..." autocomplete="off" oninput="jSearchBooks(this.value,'wish')"/></div>
+          <div id="wish-search-results"></div>
+          <div id="wish-selected" style="display:none;margin-top:8px;"></div>
+          <button class="btn-add" style="margin-top:10px;width:100%;" onclick="addWishManual()">Add to wishlist</button>
         </div>
       </div>
       <div id="panel-prizes" style="display:none;">
         <div class="card">
+          <div style="font-size:15px;font-weight:600;color:#1a1a18;margin-bottom:10px;">Edit prizes</div>
           <div id="prize-editor"></div>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-            <input type="text" id="prize-name-input" placeholder="Prize name..." />
-            <input type="number" id="prize-pts-input" value="10" min="1" style="width:70px;" />
+            <input type="text" id="prize-name-input" placeholder="Prize name..."/>
+            <input type="number" id="prize-pts-input" value="10" min="1" style="width:70px;"/>
             <button class="btn-add" onclick="addPrize()">Add prize</button>
           </div>
         </div>
@@ -118,7 +168,6 @@ input[type=number] { width: 70px; }
     </div>
   </div>
 </div>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
 var jAdminHash=1721982;
 var BOOKS_KEY='jaxon_books_v3',PRIZES_KEY='jaxon_prizes_v3',RECS_KEY='jaxon_recs_v3',WISH_KEY='jaxon_wish_v3';
@@ -126,49 +175,182 @@ var defaultPrizes=[{id:1,name:'Stay up 30 minutes late',pts:5},{id:2,name:'Pick 
 function jLoad(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function jSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 var jBooks=jLoad(BOOKS_KEY,[]),jPrizes=jLoad(PRIZES_KEY,defaultPrizes),jRecs=jLoad(RECS_KEY,[]),jWishlist=jLoad(WISH_KEY,[]);
-var jLikeRating=0,jHardRating=0,jScanActive=false,jWishActive=false,jPendingBook=null,jPendingWish=null;
+var jLikeRating=0,jHardRating=0,jPendingBook=null,jPendingWish=null,jSearchTimer=null;
 var jLikeLabels=['','Didn\'t like it','It was okay','Liked it!','Really liked it!','Loved it!'];
 var jHardLabels=['','Super easy','Pretty easy','Just right','A bit hard','Really hard'];
-var SCAN_SVG='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="3" height="10" rx="1"/><rect x="7" y="5" width="2" height="14" rx="1"/><rect x="11" y="7" width="1" height="10" rx="1"/><rect x="14" y="5" width="3" height="14" rx="1"/><rect x="19" y="7" width="3" height="10" rx="1"/></svg>';
 function jEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function jTotalPts(){return jBooks.reduce(function(s,b){return s+(b.pts||1);},0);}
 function jSetStars(group,val){
   if(group==='like'){jLikeRating=val;var e=document.getElementById('like-label');if(e)e.textContent=jLikeLabels[val]||'';}
   else{jHardRating=val;var e2=document.getElementById('hard-label');if(e2)e2.textContent=jHardLabels[val]||'';}
   document.querySelectorAll('.rating-star[data-group="'+group+'"]').forEach(function(s){s.classList.toggle('active',parseInt(s.getAttribute('data-val'))<=val);});}
-function switchTab(t){['read','wishlist','prizes'].forEach(function(x){var tab=document.getElementById('tab-'+x);var panel=document.getElementById('panel-'+x);if(tab)tab.classList.toggle('active',x===t);if(panel)panel.style.display=x===t?'block':'none';});}
-function jLookupISBN(isbn,cb){
-  fetch('https://www.googleapis.com/books/v1/volumes?q=isbn:'+isbn+'&maxResults=1')
-  .then(function(r){return r.json();})
-  .then(function(d){var item=d.items&&d.items[0];if(item){var info=item.volumeInfo;var cover=(info.imageLinks&&(info.imageLinks.thumbnail||info.imageLinks.smallThumbnail))||'';cover=cover.replace('http://','https://');cb({title:info.title,author:(info.authors&&info.authors[0])||'',cover:cover,description:info.description?info.description.substring(0,180):'',isbn:isbn,gbId:item.id});}else{cb(null);}})
-  .catch(function(){cb(null);});}
-function jLookupTitle(title,cb){
-  fetch('https://www.googleapis.com/books/v1/volumes?q=intitle:'+encodeURIComponent(title)+'&maxResults=1&printType=books')
-  .then(function(r){return r.json();})
-  .then(function(d){var item=d.items&&d.items[0];if(item){var info=item.volumeInfo;var cover=(info.imageLinks&&(info.imageLinks.thumbnail||info.imageLinks.smallThumbnail))||'';cover=cover.replace('http://','https://');cb({title:info.title||title,author:(info.authors&&info.authors[0])||'',cover:cover,description:info.description?info.description.substring(0,180):'',gbId:item.id});}else{cb(null);}})
-  .catch(function(){cb(null);});}
-function jStopStream(which){var scanner=which==='scan'?window._jScanQR:window._jWishQR;if(scanner){scanner.stop().catch(function(){});if(which==='scan')window._jScanQR=null;else window._jWishQR=null;}if(which==='scan'){jScanActive=false;}else{jWishActive=false;}}
-function jStartBarcodeScanner(wrapperId,onFound){var scanner=new Html5Qrcode(wrapperId);if(wrapperId==='scan-video-wrap')window._jScanQR=scanner;else window._jWishQR=scanner;scanner.start({facingMode:'environment'},{fps:10,qrbox:{width:250,height:150}},function(text){scanner.stop().catch(function(){});onFound(text);},function(){}).catch(function(){alert('Camera access denied. Please type the title manually.');});}
-function toggleScanner(){var wrap=document.getElementById('scanner-wrap'),btn=document.getElementById('scan-toggle-btn');if(!jScanActive){jScanActive=true;wrap.style.display='block';btn.innerHTML=SCAN_SVG+' Stop scanning';jStartBarcodeScanner('scan-video-wrap',function(isbn){wrap.style.display='none';btn.innerHTML=SCAN_SVG+' Scan barcode';var rb=document.getElementById('scan-result-block');rb.style.display='block';rb.innerHTML='<div style="color:#6b6b68;font-size:13px;font-style:italic;">Looking up book...</div>';jLookupISBN(isbn,function(book){if(book){jPendingBook=book;document.getElementById('book-input').value=book.title;rb.innerHTML='<div class="scan-result"><div style="display:flex;gap:10px">'+(book.cover?'<img src="'+jEsc(book.cover)+'" style="width:44px;height:60px;object-fit:cover;border-radius:4px;" />':'')+'<div><div class="scan-result-title">'+jEsc(book.title)+'</div><div class="scan-result-author">'+jEsc(book.author)+'</div></div></div></div>';}else{rb.innerHTML='<div style="background:#faeeda;border-radius:8px;padding:10px;font-size:13px;color:#854f0b;">Book not found — please type the title.</div>';}});});}else{jScanActive=false;wrap.style.display='none';jStopStream('scan');btn.innerHTML=SCAN_SVG+' Scan barcode';}}
-function toggleWishScanner(){var wrap=document.getElementById('wish-scanner-wrap'),btn=document.getElementById('wish-scan-btn');if(!jWishActive){jWishActive=true;wrap.style.display='block';btn.innerHTML=SCAN_SVG+' Stop scanning';jStartBarcodeScanner('wish-video-wrap',function(isbn){wrap.style.display='none';btn.innerHTML=SCAN_SVG+' Scan barcode';var rb=document.getElementById('wish-result-block');rb.style.display='block';rb.innerHTML='<div style="color:#6b6b68;font-size:13px;font-style:italic;">Looking up book...</div>';jLookupISBN(isbn,function(book){if(book){jPendingWish=book;document.getElementById('wish-input').value=book.title;rb.innerHTML='<div class="scan-result"><div style="display:flex;gap:10px">'+(book.cover?'<img src="'+jEsc(book.cover)+'" style="width:44px;height:60px;object-fit:cover;border-radius:4px;" />':'')+'<div><div class="scan-result-title">'+jEsc(book.title)+'</div><div class="scan-result-author">'+jEsc(book.author)+'</div></div></div></div>';}else{rb.innerHTML='<div style="background:#faeeda;border-radius:8px;padding:10px;font-size:13px;color:#854f0b;">Not found — please type the title.</div>';}});});}else{jWishActive=false;wrap.style.display='none';jStopStream('wish');btn.innerHTML=SCAN_SVG+' Scan barcode';}}
-function addWishManual(){var inp=document.getElementById('wish-input'),title=inp.value.trim();if(!title)return;if(jPendingWish&&jPendingWish.title===title){var entry=Object.assign({},jPendingWish);entry.id=Date.now();jWishlist.push(entry);jSave(WISH_KEY,jWishlist);inp.value='';jPendingWish=null;document.getElementById('wish-result-block').style.display='none';jRenderWishlist();}else{jLookupTitle(title,function(info){var entry=info?{title:info.title||title,author:info.author,cover:info.cover,description:info.description,gbId:info.gbId}:{title:title,author:'',cover:'',description:'',gbId:null};entry.id=Date.now();jWishlist.push(entry);jSave(WISH_KEY,jWishlist);inp.value='';jPendingWish=null;document.getElementById('wish-result-block').style.display='none';jRenderWishlist();});}}
-function markRead(id){var item=jWishlist.find(function(w){return w.id===id;});if(item){document.getElementById('book-input').value=item.title;if(item.cover)jPendingBook={title:item.title,author:item.author,cover:item.cover,description:item.description,gbId:item.gbId};jWishlist=jWishlist.filter(function(w){return w.id!==id;});jSave(WISH_KEY,jWishlist);jRenderWishlist();var ai=document.getElementById('admin-inner');ai.style.display='block';switchTab('read');document.getElementById('scan-result-block').style.display='none';}}
+function switchTab(t){
+  ['read','wishlist','prizes'].forEach(function(x){
+    var tab=document.getElementById('tab-'+x);
+    var panel=document.getElementById('panel-'+x);
+    if(tab)tab.classList.toggle('active',x===t);
+    if(panel)panel.style.display=x===t?'block':'none';
+  });}
+function jSearchBooks(query,mode){
+  clearTimeout(jSearchTimer);
+  var resultsEl=document.getElementById(mode==='read'?'book-search-results':'wish-search-results');
+  if(!query||query.length<2){resultsEl.innerHTML='';return;}
+  resultsEl.innerHTML='<div class="search-loading">Searching...</div>';
+  jSearchTimer=setTimeout(function(){
+    fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(query)+'&maxResults=5&printType=books&langRestrict=en')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d.items||!d.items.length){resultsEl.innerHTML='<div class="search-loading">No results found</div>';return;}
+      var html='<div class="search-results">';
+      d.items.forEach(function(item){
+        var info=item.volumeInfo;
+        var cover=(info.imageLinks&&(info.imageLinks.thumbnail||info.imageLinks.smallThumbnail))||'';
+        if(cover)cover=cover.replace('http://','https://');
+        var author=(info.authors&&info.authors[0])||'';
+        var desc=info.description?info.description.substring(0,120):'';
+        var bd={title:info.title||'',author:author,cover:cover,description:desc,gbId:item.id};
+        html+='<div class="search-result-item" onclick="jSelectBook(\''+mode+'\',this.dataset.book)" data-book=\''+jEsc(JSON.stringify(bd))+'\''+'>';
+        html+=cover?'<img class="search-result-cover" src="'+jEsc(cover)+'" alt=""/>':'<div class="search-result-cover" style="display:flex;align-items:center;justify-content:center;font-size:16px;">&#128218;</div>';
+        html+='<div><div class="search-result-title">'+jEsc(info.title||'')+'</div>';
+        if(author)html+='<div class="search-result-author">'+jEsc(author)+'</div>';
+        html+='</div></div>';
+      });
+      html+='</div>';
+      resultsEl.innerHTML=html;
+    })
+    .catch(function(){resultsEl.innerHTML='<div class="search-loading">Search unavailable &#8212; try again</div>';});
+  },400);}
+function jSelectBook(mode,bookDataStr){
+  var book=JSON.parse(bookDataStr);
+  if(mode==='read'){
+    jPendingBook=book;
+    document.getElementById('book-search').value=book.title;
+    document.getElementById('book-search-results').innerHTML='';
+    var sel=document.getElementById('book-selected');
+    sel.style.display='block';
+    sel.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start;background:#eaf3de;border-radius:8px;padding:10px;">'+(book.cover?'<img src="'+jEsc(book.cover)+'" style="width:36px;height:50px;object-fit:cover;border-radius:3px;flex-shrink:0;"/>':'')+'<div><div style="font-size:13px;font-weight:600;color:#1a1a18;">'+jEsc(book.title)+'</div><div style="font-size:11px;color:#6b6b68;">'+jEsc(book.author)+'</div><div style="font-size:11px;color:#3b6d11;margin-top:3px;">&#10003; Selected! Set points and ratings below.</div></div></div>';
+  }else{
+    jPendingWish=book;
+    document.getElementById('wish-search').value=book.title;
+    document.getElementById('wish-search-results').innerHTML='';
+    var sel2=document.getElementById('wish-selected');
+    sel2.style.display='block';
+    sel2.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start;background:#eaf3de;border-radius:8px;padding:10px;">'+(book.cover?'<img src="'+jEsc(book.cover)+'" style="width:36px;height:50px;object-fit:cover;border-radius:3px;flex-shrink:0;"/>':'')+'<div><div style="font-size:13px;font-weight:600;color:#1a1a18;">'+jEsc(book.title)+'</div><div style="font-size:11px;color:#3b6d11;margin-top:3px;">&#10003; Selected! Click Add to wishlist.</div></div></div>';}}
+function addWishManual(){
+  var title=jPendingWish?jPendingWish.title:document.getElementById('wish-search').value.trim();
+  if(!title)return;
+  var entry=jPendingWish?Object.assign({},jPendingWish):{title:title,author:'',cover:'',description:'',gbId:null};
+  entry.id=Date.now();
+  jWishlist.push(entry);jSave(WISH_KEY,jWishlist);
+  document.getElementById('wish-search').value='';
+  document.getElementById('wish-search-results').innerHTML='';
+  document.getElementById('wish-selected').style.display='none';
+  jPendingWish=null;
+  jRenderWishlist();}
+function markRead(id){
+  var item=jWishlist.find(function(w){return w.id===id;});
+  if(item){
+    jPendingBook={title:item.title,author:item.author,cover:item.cover,description:item.description,gbId:item.gbId};
+    document.getElementById('book-search').value=item.title;
+    var sel=document.getElementById('book-selected');
+    sel.style.display='block';
+    sel.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start;background:#eaf3de;border-radius:8px;padding:10px;">'+(item.cover?'<img src="'+jEsc(item.cover)+'" style="width:36px;height:50px;object-fit:cover;border-radius:3px;flex-shrink:0;"/>':'')+'<div><div style="font-size:13px;font-weight:600;color:#1a1a18;">'+jEsc(item.title)+'</div><div style="font-size:11px;color:#3b6d11;margin-top:3px;">&#10003; Moved from wishlist!</div></div></div>';
+    jWishlist=jWishlist.filter(function(w){return w.id!==id;});jSave(WISH_KEY,jWishlist);jRenderWishlist();
+    document.getElementById('admin-inner').style.display='block';switchTab('read');}}
 function removeWish(id){jWishlist=jWishlist.filter(function(w){return w.id!==id;});jSave(WISH_KEY,jWishlist);jRenderWishlist();}
-function addBook(){var te=document.getElementById('book-input'),title=te.value.trim();if(!title){te.focus();return;}var pts=Math.max(1,Math.min(99,parseInt(document.getElementById('pts-input').value)||1));var entry={id:Date.now(),title:title,pts:pts,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}),like:jLikeRating||null,hard:jHardRating||null};if(jPendingBook&&jPendingBook.title===title){entry.cover=jPendingBook.cover;entry.author=jPendingBook.author;entry.description=jPendingBook.description;entry.gbId=jPendingBook.gbId;jFinishAddBook(entry,te);}else{jLookupTitle(title,function(info){if(info){entry.cover=info.cover;entry.author=info.author;entry.description=info.description;entry.gbId=info.gbId;}jFinishAddBook(entry,te);});}}
-function jFinishAddBook(entry,te){jBooks.push(entry);jSave(BOOKS_KEY,jBooks);te.value='';document.getElementById('pts-input').value='1';jLikeRating=0;jHardRating=0;jSetStars('like',0);jSetStars('hard',0);jPendingBook=null;document.getElementById('scan-result-block').style.display='none';jRecs=[];jSave(RECS_KEY,jRecs);jRender();document.getElementById('rec-list').innerHTML='<div class="rec-loading">Finding books Jaxon will love...</div>';jFetchRecs();te.focus();}
+function addBook(){
+  var title=jPendingBook?jPendingBook.title:document.getElementById('book-search').value.trim();
+  if(!title)return;
+  var pts=Math.max(1,Math.min(99,parseInt(document.getElementById('pts-input').value)||1));
+  var entry=jPendingBook?Object.assign({},jPendingBook):{title:title,author:'',cover:'',description:'',gbId:null};
+  entry.id=Date.now();entry.pts=pts;
+  entry.date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  entry.like=jLikeRating||null;entry.hard=jHardRating||null;
+  jBooks.push(entry);jSave(BOOKS_KEY,jBooks);
+  document.getElementById('book-search').value='';
+  document.getElementById('book-search-results').innerHTML='';
+  document.getElementById('book-selected').style.display='none';
+  document.getElementById('pts-input').value='1';
+  jLikeRating=0;jHardRating=0;jSetStars('like',0);jSetStars('hard',0);jPendingBook=null;
+  jRecs=[];jSave(RECS_KEY,jRecs);jRender();
+  document.getElementById('rec-list').innerHTML='<div class="rec-loading">Finding books Jaxon will love...</div>';
+  jFetchRecs();}
 function jaxonRemoveBook(id){jBooks=jBooks.filter(function(b){return b.id!==id;});jSave(BOOKS_KEY,jBooks);jRender();}
 function jaxonRemovePrize(id){jPrizes=jPrizes.filter(function(p){return p.id!==id;});jSave(PRIZES_KEY,jPrizes);jRender();}
-function addPrize(){var ne=document.getElementById('prize-name-input'),name=ne.value.trim();if(!name){ne.focus();return;}jPrizes.push({id:Date.now(),name:name,pts:Math.max(1,parseInt(document.getElementById('prize-pts-input').value)||10)});jSave(PRIZES_KEY,jPrizes);ne.value='';document.getElementById('prize-pts-input').value='10';jRender();}
-function toggleAdmin(){var el=document.getElementById('admin-inner');if(el.style.display!=='none'){el.style.display='none';return;}var pw=prompt('Enter parent password:');if(pw===null)return;var hash=0;for(var i=0;i<pw.length;i++){hash=((hash<<5)-hash)+pw.charCodeAt(i);hash|=0;}if(hash===jAdminHash){el.style.display='block';}else{alert('Incorrect password.');}}
+function addPrize(){
+  var ne=document.getElementById('prize-name-input'),name=ne.value.trim();if(!name)return;
+  jPrizes.push({id:Date.now(),name:name,pts:Math.max(1,parseInt(document.getElementById('prize-pts-input').value)||10)});
+  jSave(PRIZES_KEY,jPrizes);ne.value='';document.getElementById('prize-pts-input').value='10';jRender();}
+function toggleAdmin(){
+  var el=document.getElementById('admin-inner');
+  if(el.style.display!=='none'){el.style.display='none';return;}
+  var pw=prompt('Enter parent password:');
+  if(pw===null)return;
+  var hash=0;for(var i=0;i<pw.length;i++){hash=((hash<<5)-hash)+pw.charCodeAt(i);hash|=0;}
+  if(hash===jAdminHash){el.style.display='block';}else{alert('Incorrect password.');}}
 function refreshRecs(){jRecs=[];jSave(RECS_KEY,jRecs);document.getElementById('rec-list').innerHTML='<div class="rec-loading">Finding new books...</div>';jFetchRecs();}
-function jRenderWishlist(){var el=document.getElementById('toread-list');if(jWishlist.length===0){el.innerHTML='<div class="empty">No books on the list yet!</div>';return;}var html='';jWishlist.forEach(function(w){var wGbLink=w.gbId?'https://books.google.com/books?id='+w.gbId:'https://www.google.com/search?q='+encodeURIComponent(w.title+' book');html+='<div class="toread-item"><div class="toread-cover">'+(w.cover?'<img src="'+jEsc(w.cover)+'" alt="" />':'&#128214;')+'</div><div class="toread-info"><a href="'+wGbLink+'" target="_blank" class="toread-title" style="text-decoration:none;color:#1a1a18;">'+jEsc(w.title)+'</a>'+(w.author?'<div class="toread-author">'+jEsc(w.author)+'</div>':'')+(w.description?'<div style="font-size:11px;color:#6b6b68;margin-top:2px;line-height:1.4;">'+jEsc(w.description.substring(0,80))+'...</div>':'')+'</div><div class="toread-actions"><button class="btn-markread" onclick="markRead('+w.id+')">We read it!</button><button class="btn-sm-del" onclick="removeWish('+w.id+')" title="Remove">&#10005;</button></div></div>';});el.innerHTML=html;}
-function jRender(){var pts=jTotalPts(),sp=jPrizes.slice().sort(function(a,b){return a.pts-b.pts;}),ul=sp.filter(function(p){return pts>=p.pts;}).length;document.getElementById('total-books').textContent=jBooks.length;document.getElementById('total-pts').textContent=pts;document.getElementById('prizes-won').textContent=ul;var sh='';for(var i=0;i<Math.max(jBooks.length,10);i++)sh+='<div class="star'+(i<jBooks.length?' earned':'')+'">'+( i<jBooks.length?'&#9733;':'&#9734;')+'</div>';document.getElementById('stars-row').innerHTML=sh;var ne=document.getElementById('next-prize-block'),nx=null;for(var j=0;j<sp.length;j++){if(pts<sp[j].pts){nx=sp[j];break;}}if(nx){var pct=Math.min(100,Math.round((pts/nx.pts)*100));ne.innerHTML='<div class="next-prize-card"><div style="font-size:13px;color:#6b6b68;margin-bottom:4px;">Next prize: <strong style="color:#1a1a18">'+jEsc(nx.name)+'</strong></div><div class="pts-bar-wrap"><div class="pts-bar" id="pts-bar" style="width:0%"></div></div><div style="font-size:12px;color:#888780;">'+pts+' / '+nx.pts+' points</div></div>';setTimeout(function(){var b=document.getElementById('pts-bar');if(b)b.style.width=pct+'%';},50);}else if(sp.length>0){ne.innerHTML='<div class="all-unlocked">&#127881; All prizes unlocked &#8212; amazing job, Jaxon!</div>';}else{ne.innerHTML='';}
-var ph='';sp.forEach(function(p){var e=pts>=p.pts;ph+='<div class="card"><div class="prize-row"><div class="prize-pts">'+p.pts+' pts</div><div class="prize-name">'+jEsc(p.name)+'</div>'+(e?'<div class="prize-status-earned">&#10003; Unlocked!</div>':'<div class="prize-status-locked">'+(p.pts-pts)+' pts to go</div>')+'</div></div>';});document.getElementById('prizes-list').innerHTML=ph||'<div class="empty">No prizes yet.</div>';
-var bh='';if(jBooks.length===0){bh='<div class="empty">No books yet!</div>';}else{jBooks.slice().reverse().forEach(function(b,i){var n=jBooks.length-i,hearts=b.like?'&#9829;'.repeat(Math.min(3,Math.round(b.like/1.67))):'';var coverImg=b.cover?'<img src="'+jEsc(b.cover)+'" style="width:42px;height:58px;object-fit:cover;border-radius:5px;flex-shrink:0;" alt="" />':'<div style="width:42px;height:58px;border-radius:5px;background:#eeedfe;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#534ab7;flex-shrink:0;">'+n+'</div>';var gbLink=b.gbId?'https://books.google.com/books?id='+b.gbId:'https://www.google.com/search?q='+encodeURIComponent(b.title+' book');bh+='<div class="book-item" style="align-items:flex-start;padding:12px 0;">'+coverImg+'<div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><a href="'+gbLink+'" target="_blank" style="font-size:14px;font-weight:600;color:#1a1a18;text-decoration:none;">'+jEsc(b.title)+'</a>'+(hearts?'<span class="book-hearts" style="font-size:12px;">'+hearts+'</span>':'')+'</div>'+(b.author?'<div style="font-size:12px;color:#888780;margin-top:1px;">'+jEsc(b.author)+'</div>':'')+(b.description?'<div style="font-size:11px;color:#6b6b68;margin-top:3px;line-height:1.45;">'+jEsc(b.description.substring(0,100))+'...</div>':'')+'<div style="display:flex;align-items:center;gap:6px;margin-top:5px;"><span style="font-size:11px;color:#a0a09a;">'+jEsc(b.date)+'</span><span class="book-pts">+'+b.pts+' pt'+(b.pts!==1?'s':'')+'</span></div></div><button class="book-del" onclick="jaxonRemoveBook('+b.id+')" title="Remove">&#10005;</button></div>';});}document.getElementById('books-list').innerHTML=bh;
-var eh='';sp.forEach(function(p){eh+='<div class="prize-edit-row"><div class="prize-edit-name">'+jEsc(p.name)+'</div><div class="prize-edit-pts">'+p.pts+' pts</div><button class="prize-edit-del" onclick="jaxonRemovePrize('+p.id+')">&#10005;</button></div>';});document.getElementById('prize-editor').innerHTML=eh||'<div class="empty" style="font-size:13px;">No prizes yet.</div>';jRenderWishlist();jRenderRecs();}
-function jRenderRecs(){var el=document.getElementById('rec-list');if(jBooks.length===0){el.innerHTML='<div class="rec-loading">Add some books to get recommendations!</div>';return;}if(jRecs.length===0){el.innerHTML='<div class="rec-loading">Finding great books for Jaxon...</div>';jFetchRecs();return;}var html='';jRecs.forEach(function(r){var bc=r.difficulty==='easy'?'badge-easy':r.difficulty==='challenge'?'badge-challenge':'badge-medium',bl=r.difficulty==='easy'?'Easy read':r.difficulty==='challenge'?'Stretch book':'Just right';html+='<div class="rec-card"><div class="rec-header"><div><div class="rec-title">'+jEsc(r.title)+'</div><div class="rec-author">'+jEsc(r.author)+'</div></div><span class="rec-badge '+bc+'">'+bl+'</span></div><div class="rec-why">'+jEsc(r.why)+'</div></div>';});html+='<button style="background:none;border:1px solid #e8e6df;border-radius:8px;padding:6px 16px;font-size:13px;color:#888780;cursor:pointer;display:block;margin:8px auto 0;" onclick="refreshRecs()">Refresh suggestions</button>';el.innerHTML=html;}
-function jFetchRecs(){if(jBooks.length===0)return;var al=0,ah=0,rc=0;jBooks.forEach(function(b){if(b.like&&b.hard){al+=b.like;ah+=b.hard;rc++;}});if(rc>0){al=al/rc;ah=ah/rc;}var bl=jBooks.slice(-8).map(function(b){return b.title+(b.like?' (liked: '+b.like+'/5, difficulty: '+b.hard+'/5)':'');}).join(', ');var wl=jWishlist.map(function(w){return w.title;}).join(', ');var prompt='Jaxon is an early reader aged 4-7. He has recently read: '+bl+'.'+(rc>0?' On average he rates enjoyment '+al.toFixed(1)+'/5 and difficulty '+ah.toFixed(1)+'/5.':'')+(wl?' His to-read wishlist already includes: '+wl+'. Do NOT recommend those.':'')+' Recommend exactly 4 books he would enjoy next. Mix difficulties. Respond ONLY with a JSON array: [{"title":"...","author":"...","difficulty":"easy|medium|challenge","why":"One sentence why Jaxon would love this."}]';fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})}).then(function(r){return r.json();}).then(function(data){var text='';if(data.content)data.content.forEach(function(c){if(c.type==='text')text+=c.text;});var parsed=JSON.parse(text.replace(/```json|```/g,'').trim());if(Array.isArray(parsed)){jRecs=parsed;jSave(RECS_KEY,jRecs);jRenderRecs();}}).catch(function(){document.getElementById('rec-list').innerHTML='<div class="rec-loading">Couldn\'t load recommendations.</div>';});}
-document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.rating-star').forEach(function(s){s.addEventListener('click',function(){jSetStars(this.getAttribute('data-group'),parseInt(this.getAttribute('data-val')));});});document.addEventListener('keydown',function(e){if(e.key==='Enter'){if(document.activeElement.id==='book-input'||document.activeElement.id==='pts-input')addBook();if(document.activeElement.id==='wish-input')addWishManual();if(document.activeElement.id==='prize-name-input'||document.activeElement.id==='prize-pts-input')addPrize();}});jRender();if(jBooks.length>0&&jRecs.length===0)jFetchRecs();});
+function jRenderWishlist(){
+  var el=document.getElementById('toread-list');
+  if(jWishlist.length===0){el.innerHTML='<div class="empty">No books on the list yet &#8212; search and add some!</div>';return;}
+  var html='';
+  jWishlist.forEach(function(w){
+    var wGbLink=w.gbId?'https://books.google.com/books?id='+w.gbId:'https://www.google.com/search?q='+encodeURIComponent(w.title+' book');
+    html+='<div class="toread-item"><div class="toread-cover">'+(w.cover?'<img src="'+jEsc(w.cover)+'" alt=""/>':'&#128218;')+'</div>';
+    html+='<div class="toread-info"><a href="'+wGbLink+'" target="_blank" class="toread-title">'+jEsc(w.title)+'</a>';
+    if(w.author)html+='<div class="toread-author">'+jEsc(w.author)+'</div>';
+    html+='</div><div class="toread-actions"><button class="btn-markread" onclick="markRead('+w.id+')">We read it!</button><button class="btn-sm-del" onclick="removeWish('+w.id+')" title="Remove">&#10005;</button></div></div>';
+  });
+  el.innerHTML=html;}
+function jRender(){
+  var pts=jTotalPts(),sp=jPrizes.slice().sort(function(a,b){return a.pts-b.pts;}),ul=sp.filter(function(p){return pts>=p.pts;}).length;
+  document.getElementById('total-books').textContent=jBooks.length;
+  document.getElementById('total-pts').textContent=pts;
+  document.getElementById('prizes-won').textContent=ul;
+  var sh='';for(var i=0;i<Math.max(jBooks.length,10);i++)sh+='<div class="star'+(i<jBooks.length?' earned':'')+'">'+( i<jBooks.length?'&#9733;':'&#9734;')+'</div>';
+  document.getElementById('stars-row').innerHTML=sh;
+  var ne=document.getElementById('next-prize-block'),nx=null;
+  for(var j=0;j<sp.length;j++){if(pts<sp[j].pts){nx=sp[j];break;}}
+  if(nx){var pct=Math.min(100,Math.round((pts/nx.pts)*100));ne.innerHTML='<div class="next-prize-card"><div style="font-size:13px;color:#6b6b68;margin-bottom:4px;">Next prize: <strong style="color:#1a1a18">'+jEsc(nx.name)+'</strong></div><div class="pts-bar-wrap"><div class="pts-bar" id="pts-bar" style="width:0%"></div></div><div style="font-size:12px;color:#888780;">'+pts+' / '+nx.pts+' points</div></div>';setTimeout(function(){var b=document.getElementById('pts-bar');if(b)b.style.width=pct+'%';},50);}
+  else if(sp.length>0){ne.innerHTML='<div class="all-unlocked">&#127881; All prizes unlocked &#8212; amazing job, Jaxon!</div>';}else{ne.innerHTML='';}
+  var ph='';sp.forEach(function(p){var e=pts>=p.pts;ph+='<div class="card"><div class="prize-row"><div class="prize-pts">'+p.pts+' pts</div><div class="prize-name">'+jEsc(p.name)+'</div>'+(e?'<div class="prize-status-earned">&#10003; Unlocked!</div>':'<div class="prize-status-locked">'+(p.pts-pts)+' pts to go</div>')+'</div></div>';});
+  document.getElementById('prizes-list').innerHTML=ph||'<div class="empty">No prizes yet.</div>';
+  var bh='';
+  if(jBooks.length===0){bh='<div class="empty">No books yet &#8212; add the first one below!</div>';}
+  else{jBooks.slice().reverse().forEach(function(b,i){
+    var n=jBooks.length-i,hearts=b.like?'&#9829;'.repeat(Math.min(3,Math.round(b.like/1.67))):'';
+    var coverImg=b.cover?'<img src="'+jEsc(b.cover)+'" style="width:42px;height:58px;object-fit:cover;border-radius:5px;flex-shrink:0;" alt=""/>':'<div style="width:42px;height:58px;border-radius:5px;background:#eeedfe;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#534ab7;flex-shrink:0;">'+n+'</div>';
+    var gbLink=b.gbId?'https://books.google.com/books?id='+b.gbId:'https://www.google.com/search?q='+encodeURIComponent(b.title+' book');
+    bh+='<div class="book-item">'+coverImg+'<div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><a href="'+gbLink+'" target="_blank" style="font-size:14px;font-weight:600;color:#1a1a18;text-decoration:none;">'+jEsc(b.title)+'</a>'+(hearts?'<span class="book-hearts">'+hearts+'</span>':'')+'</div>'+(b.author?'<div style="font-size:12px;color:#888780;margin-top:1px;">'+jEsc(b.author)+'</div>':'')+(b.description?'<div style="font-size:11px;color:#6b6b68;margin-top:3px;line-height:1.45;">'+jEsc(b.description.substring(0,100))+'...</div>':'')+'<div style="display:flex;align-items:center;gap:6px;margin-top:5px;"><span style="font-size:11px;color:#a0a09a;">'+jEsc(b.date)+'</span><span class="book-pts">+'+b.pts+' pt'+(b.pts!==1?'s':'')+'</span></div></div><button class="book-del" onclick="jaxonRemoveBook('+b.id+')" title="Remove">&#10005;</button></div>';});}
+  document.getElementById('books-list').innerHTML=bh;
+  var eh='';sp.forEach(function(p){eh+='<div class="prize-edit-row"><div class="prize-edit-name">'+jEsc(p.name)+'</div><div class="prize-edit-pts">'+p.pts+' pts</div><button class="prize-edit-del" onclick="jaxonRemovePrize('+p.id+')">&#10005;</button></div>';});
+  document.getElementById('prize-editor').innerHTML=eh||'<div class="empty" style="font-size:13px;">No prizes yet.</div>';
+  jRenderWishlist();jRenderRecs();}
+function jRenderRecs(){
+  var el=document.getElementById('rec-list');
+  if(jBooks.length===0){el.innerHTML='<div class="rec-loading">Add some books to get personalised recommendations!</div>';return;}
+  if(jRecs.length===0){el.innerHTML='<div class="rec-loading">Finding great books for Jaxon...</div>';jFetchRecs();return;}
+  var html='';
+  jRecs.forEach(function(r){var bc=r.difficulty==='easy'?'badge-easy':r.difficulty==='challenge'?'badge-challenge':'badge-medium',bl=r.difficulty==='easy'?'Easy read':r.difficulty==='challenge'?'Stretch book':'Just right';html+='<div class="rec-card"><div class="rec-header"><div><div class="rec-title">'+jEsc(r.title)+'</div><div class="rec-author">'+jEsc(r.author)+'</div></div><span class="rec-badge '+bc+'">'+bl+'</span></div><div class="rec-why">'+jEsc(r.why)+'</div></div>';});
+  html+='<button style="background:none;border:1px solid #e8e6df;border-radius:8px;padding:6px 16px;font-size:13px;color:#888780;cursor:pointer;display:block;margin:8px auto 0;" onclick="refreshRecs()">Refresh suggestions</button>';
+  el.innerHTML=html;}
+function jFetchRecs(){
+  if(jBooks.length===0)return;
+  var al=0,ah=0,rc=0;jBooks.forEach(function(b){if(b.like&&b.hard){al+=b.like;ah+=b.hard;rc++;}});if(rc>0){al=al/rc;ah=ah/rc;}
+  var bl=jBooks.slice(-8).map(function(b){return b.title+(b.like?' (liked: '+b.like+'/5, difficulty: '+b.hard+'/5)':'');}).join(', ');
+  var wl=jWishlist.map(function(w){return w.title;}).join(', ');
+  var prompt='Jaxon is an early reader aged 4-7. He has recently read: '+bl+'.'+(rc>0?' On average he rates enjoyment '+al.toFixed(1)+'/5 and difficulty '+ah.toFixed(1)+'/5.':'')+(wl?' His to-read wishlist already includes: '+wl+'. Do NOT recommend those.':'')+' Recommend exactly 4 books he would enjoy next. Mix difficulties. Respond ONLY with a JSON array: [{"title":"...","author":"...","difficulty":"easy|medium|challenge","why":"One sentence why Jaxon would love this."}]';
+  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})})
+  .then(function(r){return r.json();})
+  .then(function(data){var text='';if(data.content)data.content.forEach(function(c){if(c.type==='text')text+=c.text;});var parsed=JSON.parse(text.replace(/```json|```/g,'').trim());if(Array.isArray(parsed)){jRecs=parsed;jSave(RECS_KEY,jRecs);jRenderRecs();}})
+  .catch(function(){document.getElementById('rec-list').innerHTML='<div class="rec-loading">Couldn\'t load recommendations &#8212; try refreshing.</div>';});}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.rating-star').forEach(function(s){s.addEventListener('click',function(){jSetStars(this.getAttribute('data-group'),parseInt(this.getAttribute('data-val')));});});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&(document.activeElement.id==='prize-name-input'||document.activeElement.id==='prize-pts-input'))addPrize();
+  });
+  jRender();
+  if(jBooks.length>0&&jRecs.length===0)jFetchRecs();
+});
 </script>
 </body>
 </html>
