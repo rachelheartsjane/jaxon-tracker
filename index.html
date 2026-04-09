@@ -150,7 +150,7 @@ input:focus { border-color: #7f77dd; box-shadow: 0 0 0 3px rgba(127,119,221,0.15
             Scan barcode
           </button>
           <div id="scanner-wrap" style="display:none;">
-            <div class="scan-preview"><video id="scan-video" autoplay playsinline muted></video><div class="scan-line"></div></div>
+            <div id="scan-video-wrap" style="margin-top:10px;border-radius:10px;overflow:hidden;"></div>
             <div style="font-size:12px;color:#888780;text-align:center;margin-top:6px;">Point camera at barcode on back of book</div>
           </div>
           <div id="scan-result-block" style="display:none;"></div>
@@ -177,7 +177,7 @@ input:focus { border-color: #7f77dd; box-shadow: 0 0 0 3px rgba(127,119,221,0.15
             Scan barcode
           </button>
           <div id="wish-scanner-wrap" style="display:none;">
-            <div class="scan-preview"><video id="wish-video" autoplay playsinline muted></video><div class="scan-line"></div></div>
+            <div id="wish-video-wrap" style="margin-top:10px;border-radius:10px;overflow:hidden;"></div>
             <div style="font-size:12px;color:#888780;text-align:center;margin-top:6px;">Point camera at barcode on back of book</div>
           </div>
           <div id="wish-result-block" style="display:none;"></div>
@@ -205,7 +205,7 @@ input:focus { border-color: #7f77dd; box-shadow: 0 0 0 3px rgba(127,119,221,0.15
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
 var jAdminHash=1721982;
 var BOOKS_KEY='jaxon_books_v3',PRIZES_KEY='jaxon_prizes_v3',RECS_KEY='jaxon_recs_v3',WISH_KEY='jaxon_wish_v3';
@@ -238,48 +238,67 @@ function switchTab(t){
 }
 
 function jLookupISBN(isbn,cb){
-  fetch('https://openlibrary.org/api/books?bibkeys=ISBN:'+isbn+'&format=json&jscmd=data')
+  fetch('https://www.googleapis.com/books/v1/volumes?q=isbn:'+isbn+'&maxResults=1')
   .then(function(r){return r.json();})
-  .then(function(d){var key='ISBN:'+isbn,b=d[key];if(b){cb({title:b.title,author:(b.authors&&b.authors[0])?b.authors[0].name:'',cover:b.cover?b.cover.small:'',isbn:isbn});}else{cb(null);}})
-  .catch(function(){cb(null);});
+  .then(function(d){
+    var item=d.items&&d.items[0];
+    if(item){
+      var info=item.volumeInfo;
+      var cover=(info.imageLinks&&(info.imageLinks.thumbnail||info.imageLinks.smallThumbnail))||'';
+      cover=cover.replace('http://','https://');
+      cb({title:info.title,author:(info.authors&&info.authors[0])||'',cover:cover,description:info.description?info.description.substring(0,180):'',isbn:isbn,gbId:item.id});
+    }else{cb(null);}
+  }).catch(function(){cb(null);});
+}
+
+function jLookupTitle(title,cb){
+  fetch('https://www.googleapis.com/books/v1/volumes?q=intitle:'+encodeURIComponent(title)+'&maxResults=1&printType=books')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var item=d.items&&d.items[0];
+    if(item){
+      var info=item.volumeInfo;
+      var cover=(info.imageLinks&&(info.imageLinks.thumbnail||info.imageLinks.smallThumbnail))||'';
+      cover=cover.replace('http://','https://');
+      cb({title:info.title||title,author:(info.authors&&info.authors[0])||'',cover:cover,description:info.description?info.description.substring(0,180):'',gbId:item.id});
+    }else{cb(null);}
+  }).catch(function(){cb(null);});
 }
 
 function jStopStream(which){
-  var stream=which==='scan'?jScanStream:jWishStream;
-  if(stream)stream.getTracks().forEach(function(t){t.stop();});
-  if(which==='scan'){jScanStream=null;jScanActive=false;}else{jWishStream=null;jWishActive=false;}
+  var scanner=which==='scan'?window._jScanQR:window._jWishQR;
+  if(scanner){scanner.stop().catch(function(){});if(which==='scan')window._jScanQR=null;else window._jWishQR=null;}
+  if(which==='scan'){jScanActive=false;}else{jWishActive=false;}
 }
 
 function jStartBarcodeScanner(videoId,onFound){
-  var video=document.getElementById(videoId);
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
-  .then(function(stream){
-    if(videoId==='scan-video')jScanStream=stream;else jWishStream=stream;
-    video.srcObject=stream;
-    var canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),done=false;
-    var interval=setInterval(function(){
-      if(done||video.readyState<video.HAVE_ENOUGH_DATA)return;
-      canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-      ctx.drawImage(video,0,0);
-      try{
-        if(window.ZXingBrowser&&window.ZXingBrowser.BrowserMultiFormatReader){
-          var reader=new window.ZXingBrowser.BrowserMultiFormatReader();
-          reader.decodeFromCanvas(canvas).then(function(result){
-            if(result&&!done){done=true;clearInterval(interval);jStopStream(videoId==='scan-video'?'scan':'wish');onFound(result.getText());}
-          }).catch(function(){});
-        }
-      }catch(ex){}
-    },500);
-    if(videoId==='scan-video')window._jScanInt=interval;else window._jWishInt=interval;
-  })
-  .catch(function(){alert('Camera access denied. Please type the title manually.');jStopStream(videoId==='scan-video'?'scan':'wish');});
+  var wrapperId=videoId+'-wrap';
+  var wrapper=document.getElementById(wrapperId);
+  if(!wrapper){
+    wrapper=document.createElement('div');
+    wrapper.id=wrapperId;
+    document.getElementById(videoId).parentNode.replaceChild(wrapper,document.getElementById(videoId));
+  }
+  var scanner=new Html5Qrcode(wrapperId);
+  if(videoId==='scan-video')window._jScanQR=scanner;else window._jWishQR=scanner;
+  scanner.start(
+    {facingMode:'environment'},
+    {fps:10,qrbox:{width:250,height:150}},
+    function(text){
+      scanner.stop().catch(function(){});
+      onFound(text);
+    },
+    function(){}
+  ).catch(function(err){
+    alert('Camera access denied. Please type the title manually.');
+  });
 }
 
 function toggleScanner(){
   var wrap=document.getElementById('scanner-wrap'),btn=document.getElementById('scan-toggle-btn');
   if(!jScanActive){
     jScanActive=true;wrap.style.display='block';btn.innerHTML=SCAN_SVG+' Stop scanning';
-    jStartBarcodeScanner('scan-video',function(isbn){
+    jStartBarcodeScanner('scan-video-wrap',function(isbn){
       wrap.style.display='none';btn.innerHTML=SCAN_SVG+' Scan barcode';
       var rb=document.getElementById('scan-result-block');
       rb.style.display='block';rb.innerHTML='<div style="color:#6b6b68;font-size:13px;font-style:italic;padding:8px 0;">Looking up book...</div>';
@@ -289,7 +308,7 @@ function toggleScanner(){
       });
     });
   }else{
-    jScanActive=false;wrap.style.display='none';clearInterval(window._jScanInt);jStopStream('scan');
+    jScanActive=false;wrap.style.display='none';jStopStream('scan');
     btn.innerHTML=SCAN_SVG+' Scan barcode';
   }
 }
@@ -298,7 +317,7 @@ function toggleWishScanner(){
   var wrap=document.getElementById('wish-scanner-wrap'),btn=document.getElementById('wish-scan-btn');
   if(!jWishActive){
     jWishActive=true;wrap.style.display='block';btn.innerHTML=SCAN_SVG+' Stop scanning';
-    jStartBarcodeScanner('wish-video',function(isbn){
+    jStartBarcodeScanner('wish-video-wrap',function(isbn){
       wrap.style.display='none';btn.innerHTML=SCAN_SVG+' Scan barcode';
       var rb=document.getElementById('wish-result-block');
       rb.style.display='block';rb.innerHTML='<div style="color:#6b6b68;font-size:13px;font-style:italic;padding:8px 0;">Looking up book...</div>';
@@ -308,7 +327,7 @@ function toggleWishScanner(){
       });
     });
   }else{
-    jWishActive=false;wrap.style.display='none';clearInterval(window._jWishInt);jStopStream('wish');
+    jWishActive=false;wrap.style.display='none';jStopStream('wish');
     btn.innerHTML=SCAN_SVG+' Scan barcode';
   }
 }
